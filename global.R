@@ -1,10 +1,10 @@
 
 rm(list = ls())
 
-dir <- dir("fits/")
+dir <- dir("coeff/")
 
-names_target <- gsub("fit_", "", dir)
-names_target <- gsub("_step.RData", "", names_target)
+names_target <- gsub("coeff_", "", dir)
+names_target <- gsub(".RData", "", names_target)
 
 
 

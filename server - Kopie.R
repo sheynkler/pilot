@@ -39,33 +39,14 @@ shinyServer(function(input, output, session) {
     
     summary(fit())
   })
-  coefficients <- reactive({
-    if(is.null(input$names_lm)) return(NULL)
+  fit <- reactive({
     group <- input$names_lm
-    print(group)
-    names_coeff <- paste0("coeff/coeff_", group , ".RData")
-    print(names_coeff)
-    load(names_coeff)
-    coefficients
+    names_lm <- paste0("fits/fit_", group , "_step.RData")
+    load(names_lm)
+    fit_step
   })
   forcast <- reactive({
-    coefficients <- coefficients()
-    coefficients_names <- names(coefficients)
-    data_predictor_end <- predictors()
-    
-    data_predictor_end <- data_predictor_end[, names(data_predictor_end) %in% coefficients_names]
-    
-    data_predictor_end_int <- data.frame(int = rep(1, nrow(data_predictor_end)))
-    data_predictor_end <- cbind(data_predictor_end_int, data_predictor_end)
-    
-    data_temp <- data_predictor_end
-    
-    for(i in 1:ncol(data_temp)){
-      data_temp[,i] <- data_temp[,i] * coefficients[i]
-    }
-    
-    as.numeric(apply(data_temp, 1, sum))
-    #predict(fit(), predictors())
+    predict(fit(), predictors())
   })
   data_show <- reactive({
     forcast <- round(as.numeric(forcast()), digits = 2)
